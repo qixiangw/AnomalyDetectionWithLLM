@@ -1,0 +1,13 @@
+service,pod,node,timestamp,cpuusage
+frontend,frontend-pod-1,node-1,2024-01-01 10:00:00,45.2
+frontend,frontend-pod-1,node-1,2024-01-01 10:01:00,48.5
+frontend,frontend-pod-1,node-1,2024-01-01 10:02:00,52.1
+frontend,frontend-pod-2,node-2,2024-01-01 10:00:00,35.6
+frontend,frontend-pod-2,node-2,2024-01-01 10:01:00,38.9
+frontend,frontend-pod-2,node-2,2024-01-01 10:02:00,37.2
+backend,backend-pod-1,node-1,2024-01-01 10:00:00,65.3
+backend,backend-pod-1,node-1,2024-01-01 10:01:00,68.7
+backend,backend-pod-1,node-1,2024-01-01 10:02:00,90.4
+backend,backend-pod-2,node-2,2024-01-01 10:00:00,42.1
+backend,backend-pod-2,node-2,2024-01-01 10:01:00,44.5
+backend,backend-pod-2,node-2,2024-01-01 10:02:00,43.8
