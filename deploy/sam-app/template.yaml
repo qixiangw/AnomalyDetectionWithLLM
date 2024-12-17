@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: anomaly_dect2  # 你的函数名称
+      CodeUri: ./  # 你的代码所在目录
+      Handler: lambda_function.lambda_handler  # 处理函数的路径 (文件名.函数名)
+      Runtime: python3.9  # 运行时环境
+      Timeout: 300  # 超时时间
+      MemorySize: 1280  # 内存大小
+      Role: arn:aws:iam::249517808360:role/service-role/AnomalyDetectionWithLLM-role-8q1wpo2c  # 你已有的 IAM Role ARN
+      Events:
+        S3Event:
+          Type: S3cd
+          Properties:
+            Bucket: !Ref ExistingS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: abnormal_pod_dect/inputdata/  # 你要监听的 S3 路径
+                  - Name: suffix
+                    Value: .csv  # 你要监听的文件后缀
+
+Parameters:
+  ExistingS3Bucket:
+    Type: String
+    Description: Name of existing S3 bucket
+    Default: poc-aiservice  # 你的 S3 桶名
