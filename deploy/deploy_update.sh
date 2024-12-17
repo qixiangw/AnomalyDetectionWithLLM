@@ -3,12 +3,12 @@
 set -e
 
 # 配置
-AWS_ACCOUNT_ID="249517808360"
+AWS_ACCOUNT_ID="xxx"
 REGION="us-west-2"
-FUNCTION_NAME="anomaly-detection-with-iamge"  # Fixed typo in name
+FUNCTION_NAME="anomaly-detection-with-image"  # Fixed typo in name
 IMAGE_NAME="lambda-anomaly-detection"
 VERSION=$(date +%Y%m%d-%H%M%S)  # 使用时间戳作为版本号
-
+RoleName= "youriamrole"
 # 日志函数
 log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"  # Fixed string interpolation
@@ -49,12 +49,25 @@ docker tag ${IMAGE_NAME}:${VERSION} ${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaw
 log "Pushing image to ECR..."
 docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}:${VERSION}
 
+# 部署 lambda
+log "deploy Lambda function..."
+aws lambda create-function --function-name ${FUNCTION_NAME} \
+	--architectures arm64 \
+    --package-type Image \
+    --code ImageUri=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}:${VERSION} \
+    --role arn:aws:iam::${AWS_ACCOUNT_ID}:role/service-role/${RoleName} \
+    --memory-size 1024 \
+    --timeout 900 \
+    --region us-west-2
+
 # 更新 Lambda
+'''
 log "Updating Lambda function..."
 aws lambda update-function-code \
     --region ${REGION} \
     --function-name ${FUNCTION_NAME} \
     --image-uri ${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}:${VERSION}
+'''
 
 # 等待更新完成
 log "Waiting for Lambda update to complete..."
